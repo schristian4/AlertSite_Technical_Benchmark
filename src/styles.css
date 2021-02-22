@@ -1,3 +1,149 @@
 body {
-  font-family: sans-serif;
+  background: #f4f3f1;
+  font-family: "Montserrat", sans-serif;
+  margin: 0;
+  text-align: center;
+  display: flex;
+  justify-content: center;
 }
+
+.search-field {
+  display: flex;
+  /*  position: absolute;*/
+  right: 0;
+}
+.search-field input,
+select {
+  margin-left: 2em;
+  margin-right: 2em;
+}
+.hint-dropdown {
+  color: gray;
+  font-size: 0.8em;
+  display: "";
+}
+
+/*Re-name mainContainer*/
+.mainContainer {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  justify-content: left;
+}
+.mainContainer p {
+  padding: 0;
+  margin: 0;
+  text-align: left;
+}
+.heading {
+  display: flex;
+}
+.heading h1 {
+  margin-left: 5vw;
+  font-size: 20px;
+}
+.App {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.cityTile {
+  align-items: center;
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  height: calc(28vw * 0.75);
+  justify-content: center;
+  max-height: 25vh;
+  position: relative;
+  -webkit-transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+  transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+  width: 18vw;
+  margin: 5px;
+}
+.cityStatus {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 30%;
+  height: 20%;
+  color: white;
+  background-color: #fd4646; /*Failing Condition*/
+  /*background-color: #73ffd2; Good Condition**/
+  border-radius: 0.3em;
+}
+/*Calendar Graph Can*/
+.js-rollingcalendar {
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  padding: 32px 1px 32px 32px;
+}
+
+.service__features {
+  display: block;
+}
+.js-rollingcalendar h1 {
+  font-family: "proxima-nova", "proxima nova", sans-serif;
+  font-weight: 500;
+  font-style: normal;
+  color: #5d5d5d;
+  display: inline-block;
+  font-size: 20px;
+  line-height: 24px;
+  padding-bottom: 12px;
+}
+.js-rollingcalendar h2 {
+  font-family: "proxima-nova", "proxima nova", sans-serif;
+  font-weight: 500;
+  font-style: normal;
+  color: #abadac;
+  display: inline-block;
+  font-size: 20px;
+  line-height: 24px;
+  padding-bottom: 12px;
+}
+.rolling-calendar {
+  position: relative;
+}
+/*Phone*/
+@media only screen and (min-width: 320px) {
+  .search-field {
+    flex-wrap: wrap;
+  }
+  .App {
+    width: 100vw;
+  }
+  .cityTile {
+    width: 45vw;
+    height: 15vh;
+    font-size: 7.5px;
+  }
+}
+
+/*Tablet*/
+@media only screen and (min-width: 768px) {
+  .App {
+    width: 80vw;
+  }
+  .cityTile {
+    width: 25vw;
+    font-size: 12px;
+  }
+}
+/*Desktop*/
+@media only screen and (min-width: 1200px) {
+  .App {
+    width: 60vw;
+  }
+  .cityTile {
+    width: 18vw;
+    font-style: 20px;
+  }
+}
+/* 
+@media only screen and (min-width: 1600px) {
+}
+*/
