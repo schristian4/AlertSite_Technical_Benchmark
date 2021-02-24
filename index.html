@@ -24,43 +24,22 @@
       <form>
         <div class="search-field">
           <p>Remote Location:</p>
-          <select name="locations" id="locations">
-            <option value="NewYork">NewYork</option>
-            <option value="NewYork">NewYork</option>
-          </select>
-          <p>Benchmark Location:</p>
-          <select name="monitor" id="monitor">
-            <option value="monitorID">monitorName</option>
-            <option value="monitorID">monitorName</option>
+          <select class="location_Drop_down" name="locations" id="locations">
+            <option name="newYork" value="NewYork">ABC</option>
+            <option value="NewYork">Google</option>
           </select>
         </div>
       </form>
-      <!--!!!!Form Validate Input change color red!!!!! -->
+      <!--!!!!Form Validate Input change color red!!!! -->
       <p class="hint-dropdown">
         Please select your location from the dropdown menu above
       </p>
       <!--Add header above - Requires separate containers for Tiles and Graph-->
-      <div class="App">
+      <div class="locationList">
         <!-- Convert into Class components-->
-        <div class="cityTile">
-          <h1 class="cityTitle">hint-dropdown</h1>
-          <p class="cityStatus">this.state.cityStatu</p>
-        </div>
-        <div class="cityTile">
-          <h1 class="cityTitle">{this.state.cityTitle</h1>
-          <p class="cityStatus">{this.state.cityStatus</p>
-        </div>
-        <div class="cityTile">
-          <h1 class="cityTitle">{this.state.cityTitle}</h1>
-          <p class="cityStatus">{this.state.cityStatus}</p>
-        </div>
-        <div class="cityTile">
-          <h1 class="cityTitle">{this.state.cityTitle}</h1>
-          <p class="cityStatus">{this.state.cityStatus}</p>
-        </div>
-        <div class="cityTile">
-          <h1 class="cityTitle">{this.state.cityTitle}</h1>
-          <p classx="cityStatus">{this.state.cityStatus}</p>
+        <div class="cityTile2">
+          <h1 class="cityTitle">New York</h1>
+          <p class="cityStatus">Availability: 100%</p>
         </div>
       </div>
       <!--Inspiration Credit  Octa Status Page 
@@ -79,7 +58,7 @@
         <section class="rolling__calender"></section>
       </div>
     </div>
-
-    <script src="src/index.js"></script>
   </body>
+  <script src="src/index.js"></script>
+  <script src="http://wolfshac.com/cgi-bin/AlertSiteDeviceStatus.cgi"></script>
 </html>
