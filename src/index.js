@@ -33,8 +33,8 @@ function generateList() {
   const locationKeys = Object.keys(listOfLocations);
   for (let i = 0; i < locationKeys.length; i++) {
     let objKey = Object.keys(listOfLocations)[i];
-    let div_ele = createEle("div", "cityTile2", " ");
-    let h1_ele = createEle("h1", "cityTitle", listOfLocations[objKey].name);
+    let div_ele = createEle("div", "locationTile", " ");
+    let h1_ele = createEle("h1", "locationHeading", listOfLocations[objKey].name);
     let p_ele = createEle(
       "p",
       "cityStatus",
@@ -45,4 +45,7 @@ function generateList() {
     div_ele.appendChild(p_ele);
   }
 }
-window.addEventListener("DOMContentLoaded", generateList());
+window.addEventListener("DOMContentLoaded", ()=>{
+  document.querySelector('.loading').style.display = "none";
+  generateList();
+});

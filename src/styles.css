@@ -6,7 +6,22 @@ body {
   display: flex;
   justify-content: center;
 }
-
+.loading{
+  align-items: center;
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  height: calc(28vw * 0.75);
+  max-height: 15vh;
+  position: relative;
+  -webkit-transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+  transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+  width: 100%;
+  margin: 5px;
+}
 .search-field {
   display: flex;
   /*  position: absolute;*/
@@ -48,7 +63,7 @@ select {
   flex-wrap: wrap;
 }
 
-.cityTile2 {
+.locationTile {
   align-items: center;
   background-color: #fff;
   border-radius: 5px;
@@ -71,7 +86,7 @@ select {
   padding: 10px;
   width: 55%;
   height: 45%;
-  color: white;
+  color: rgb(255, 255, 255);
   background-color: #fd4646; /*Failing Condition*/
   /*background-color: #73ffd2; Good Condition**/
   border-radius: 0.3em;
@@ -82,6 +97,8 @@ select {
   border-radius: 5px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   padding: 32px 1px 32px 32px;
+  display: none;
+  /*display: inline-block*/
 }
 
 .service__features {
@@ -93,7 +110,7 @@ select {
   font-weight: 500;
   font-style: normal;
   color: #5d5d5d;
-  display: inline-block;
+
   font-size: 20px;
   line-height: 24px;
   padding-bottom: 12px;
@@ -120,8 +137,8 @@ select {
   .locationList {
     width: 100vw;
   }
-  .cityTile {
-    width: 45vw;
+  .locationTile {
+    
     height: 15vh;
     font-size: 0.75em;
   }
@@ -132,8 +149,8 @@ select {
   .locationList {
     width: 80vw;
   }
-  .cityTile {
-    width: 25vw;
+  .locationTile {
+    
     font-size: 1em;
   }
 }
@@ -142,8 +159,7 @@ select {
   .locationList {
     width: 60vw;
   }
-  .cityTile {
-    width: 18vw;
+  .locationTile {
     font-style: 1.2em;
   }
 }
