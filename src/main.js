@@ -1,6 +1,8 @@
 /* 
 All AlertSite Location IP's: https://www.alertsite.com/cgi-bin/helpme.cgi?page=monitoring_locations.html
 */
+
+//load JSON Data when ready
 function loadJSON() {
   return new Promise(function (resolve, reject) {
     var xobj = new XMLHttpRequest();
@@ -15,19 +17,38 @@ function loadJSON() {
     xobj.send();
   });
 }
-
+//Load then parse content
 async function askForJson() {
   var data = await loadJSON();
   var cityObject = JSON.parse(data);
   return cityObject;
 }
 
-function init() {
+//Create Element
+function createEle(type, content, styleClass) {
+  let newObject = document.createElement(type);
+  if (
+    content != null &&
+    content !== undefined &&
+    (typeof content === "string" || typeof content === "number")
+  ) {
+    newObject.innerHTML = content;
+  }
+  if (styleClass != null && styleClass !== undefined) {
+    newObject.classList.add(`${styleClass}`);
+  }
+  return newObject;
+}
+
+/*------------------------
+Main Initializer function
+-------------------------*/
+function init(drop_selection) {
+  console.log(`init funct - Your Selection: ${drop_selection}`);
   var actual_JSON;
   askForJson().then((value) => {
     actual_JSON = value;
 
-    console.log("Start Init function");
     //console.log(actual_JSON);
     //console.log(testing());
     /* Creates nested groups by object properties.
@@ -66,15 +87,15 @@ function init() {
         return acc;
       }, {});
     }
-    let siteObjectArray = nestGroupsBy(actual_JSON, [
+    //sitename > location > each run from location
+    let siteObject = nestGroupsBy(actual_JSON, [
       "device_descrip",
-      "location_descrip"
+      "obj_location"
     ]);
-
-    console.log(siteObjectArray);
+    console.log(siteObject);
     //Create parameters based on MajorSite ("IE.. Texas") Selection and the Parameter (" IE.. response Times") of choice
     function createParameterArray(majorSite, param) {
-      let filters = siteObjectArray[majorSite];
+      let filters = siteObject[majorSite];
       let tempArray = [];
       for (let i in filters) {
         for (let key in filters[i]) {
@@ -85,8 +106,9 @@ function init() {
     }
     //createParameterArray("BBCi", "status");
     let status = createParameterArray("Target", "status");
-    console.log(status);
+    //console.log(status);
 
+    //Calculation object
     let calcMetric = {
       test: function () {
         console.log("test");
@@ -94,71 +116,101 @@ function init() {
       //Return array = [percentage, number of errors]
       availability: function (paramArray) {
         let errorCounter = 0;
-        let tempArray = [];
-        for (let x in paramArray) {
-          if (x != 0) {
+
+        for (let i = 0; i < paramArray.length; i++) {
+          if (x !== 0) {
             errorCounter++;
           }
         }
-        tempArray.push(Math.round((errorCounter / paramArray.length) * 100));
-        tempArray.push(errorCounter);
-        return tempArray;
-      },
+        return Math.round((errorCounter / paramArray.length) * 100);
+      }
       // Return number of total runs not in error
-      numberOfRuns: function (paramArray) {}
     };
     let x = calcMetric.availability(createParameterArray("Target", "status"));
-    console.log(x);
-  });
+    //console.log(x);
 
-  //.then((data) => actual_JSON = JSON.parse(data);;
+    //console.log(siteObject["Target"][12]);
+
+    //console.log(Object.keys(siteObject));
+
+    function createTable(objectContent, location) {
+      console.log("start creat table");
+      let siteNameArray = Object.keys(objectContent);
+      let tbody = createEle("tbody", null, "cityTable");
+      for (let i = 0; i < Object.keys(objectContent).length; i++) {
+        let tempObject = objectContent[siteNameArray[i]][location];
+        let avail = calcMetric.availability(
+          createParameterArray(siteNameArray[i], "status")
+        );
+        let tdAvailability = createEle("td", avail);
+        let tdSiteName = createEle("td", siteNameArray[i]);
+        let tdHTTP = createEle(
+          "td",
+          tempObject[tempObject.length - 1]["http_status"]
+        );
+        let trElement;
+        if (avail === 100) {
+          trElement = createEle("tr", null, "table-success");
+        } else if (avail < 100 || avail > 75) {
+          trElement = createEle("tr", null, "table-warning");
+        } else if (avail < 75 || avail > 0) {
+          trElement = createEle("tr", null, "table-danger");
+        }
+        trElement.appendChild(tdSiteName);
+        trElement.appendChild(tdHTTP);
+        trElement.appendChild(tdAvailability);
+        /*
+        for (let i = 0; i < Object.keys(tempObject).length; i++) {
+          //console.log(tempObject[i]);
+          let tdSiteName = createEle("td", tempObject[i].majorSite);
+        }*/
+        tbody.appendChild(trElement);
+      }
+      console.log(tbody);
+
+      document.querySelector("#techTable").lastElementChild.replaceWith(tbody);
+      //tbody.appendChild(tb);
+      return tbody;
+    }
+    if (
+      siteObject["Target"][drop_selection] != null &&
+      siteObject["Target"][drop_selection] !== undefined
+    ) {
+      createTable(siteObject, drop_selection);
+    }
+    /*
+      Match based on Object Location Number: 
+          .obj_location
+      Website Description Name:
+          .device_descrip
+      Website Status OK or Error 
+          .status ie: 0 
+          .http_status
+      Website Timestamp: 
+          .dt_status
+      !Average response times for the hour: 
+          push into empty array and replace entire array when building a new page or based on a time clock
+          .resptime
+
+    */
+  });
 }
 init();
 
+/*
+When more locations are available
+init(document.querySelector("#cityDropDown").value);
+*/
+
 const select = document.querySelector("#cityDropDown");
 select.addEventListener("input", (event) => {
-  console.log(event.target.selectedIndex);
-  // Use selected index to output detail report based on Value
-  const optionValue = select.children[event.target.selectedIndex].value;
-  console.log(`Option value: ${optionValue}`);
-  //pullContent(optionValue)
   console.log(
     "🚀 ~ Select index Value",
     select.children[event.target.selectedIndex].value
   );
+  init(event.target.value);
+  // Use selected index to output detail report based on Value
+  //const optionValue = select.children[event.target.selectedIndex].value;
+  //console.log(`Option Location: ${optionValue}`);
+  //pullContent(optionValue)
 });
-function createEle(type, content, styleClass) {
-  let newObject = document.createElement(type);
-  if (content != null || (content != undefined && typeof content === string)) {
-    newObject.classList.add(`${styleClass}`);
-  }
-  if (styleClass != null || styleClass != undefined) {
-    newObject.innerText = content;
-  }
-  return newObject;
-}
-//CreateEmpty Table
-function createTable() {
-  let tbody = createEle("tbody", null, "cityTable");
-  let tb = createEle("tb");
-  tbody.appendChild(tb);
-  return tbody;
-}
-//Add items to createdTable
-function appendItemsToTable() {}
-//appendItemsToTable();
-/*
-  Match based on Object Location Number: 
-      .obj_location
-  Website Description Name:
-      .device_descrip
-  Website Status OK or Error 
-      .status ie: 0 
-      .http_status
-  Website Timestamp: 
-      .dt_status
-  !Average response times for the hour: 
-      push into empty array and replace entire array when building a new page or based on a time clock
-      .resptime
-
-*/
