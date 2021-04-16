@@ -44,13 +44,11 @@ function createEle(type, content, styleClass) {
 Main Initializer function
 -------------------------*/
 function init(drop_selection) {
-  console.log(`init funct - Your Selection: ${drop_selection}`);
+  //console.log(`init funct - Your Selection: ${drop_selection}`);
   var actual_JSON;
   askForJson().then((value) => {
     actual_JSON = value;
 
-    //console.log(actual_JSON);
-    //console.log(testing());
     /* Creates nested groups by object properties.
       Credit Goes to https://gist.github.com/holmberd/945375f099cbb4139e37fef8055bc430
        * `properties` array nest from highest(index = 0) to lowest level.
@@ -87,12 +85,25 @@ function init(drop_selection) {
         return acc;
       }, {});
     }
+
     //sitename > location > each run from location
     let siteObject = nestGroupsBy(actual_JSON, [
       "device_descrip",
       "obj_location"
     ]);
     console.log(siteObject);
+    // Create DropDown list after retrieving siteobject on line 90.
+
+    // FirstObject Keyname > [locationID Value] > [0] > .location_descrip
+
+    //console.log(siteObject[selectedLocationKeyNameArray[]]);
+
+    /*
+      for (let i = 0; i < selectedLocationKeyNameArray.length; i++) {
+        let tempOption = createEle("option");
+        tempOption.value = selectedLocationKeyNameArray[i];
+      }*/
+
     //Create parameters based on MajorSite ("IE.. Texas") Selection and the Parameter (" IE.. response Times") of choice
     function createParameterArray(majorSite, param) {
       let filters = siteObject[majorSite];
@@ -104,21 +115,13 @@ function init(drop_selection) {
       }
       return tempArray;
     }
-    //createParameterArray("BBCi", "status");
-    let status = createParameterArray("Target", "status");
-    //console.log(status);
 
-    //Calculation object
     let calcMetric = {
-      test: function () {
-        console.log("test");
-      },
       //Return array = [percentage, number of errors]
       availability: function (paramArray) {
         let errorCounter = 0;
-
         for (let i = 0; i < paramArray.length; i++) {
-          if (x !== 0) {
+          if (paramArray[i] !== 0) {
             errorCounter++;
           }
         }
@@ -126,59 +129,107 @@ function init(drop_selection) {
       }
       // Return number of total runs not in error
     };
+
+    /* Test CalcMetric method:
     let x = calcMetric.availability(createParameterArray("Target", "status"));
-    //console.log(x);
-
-    //console.log(siteObject["Target"][12]);
-
-    //console.log(Object.keys(siteObject));
+    console.log(x); */
+    //Update DropDown List:
 
     function createTable(objectContent, location) {
       console.log("start creat table");
       let siteNameArray = Object.keys(objectContent);
-      let tbody = createEle("tbody", null, "cityTable");
-      for (let i = 0; i < Object.keys(objectContent).length; i++) {
+      let tbody = createEle("tbody", null, "location_tbody");
+      for (let i = 0; i < siteNameArray.length; i++) {
         let tempObject = objectContent[siteNameArray[i]][location];
+        console.log(objectContent[siteNameArray[i]][location]);
         let avail = calcMetric.availability(
           createParameterArray(siteNameArray[i], "status")
         );
         let tdAvailability = createEle("td", avail);
         let tdSiteName = createEle("td", siteNameArray[i]);
-        let tdHTTP = createEle(
-          "td",
-          tempObject[tempObject.length - 1]["http_status"]
-        );
-        let trElement;
-        if (avail === 100) {
-          trElement = createEle("tr", null, "table-success");
-        } else if (avail < 100 || avail > 75) {
-          trElement = createEle("tr", null, "table-warning");
-        } else if (avail < 75 || avail > 0) {
-          trElement = createEle("tr", null, "table-danger");
+        let tdHTTP;
+        if (tempObject !== undefined && tempObject !== null) {
+          tdHTTP = createEle(
+            "td",
+            tempObject[tempObject.length - 1]["http_status"]
+          );
+
+          let trElement;
+          if (avail === 100) {
+            trElement = createEle("tr", null, "table-success");
+          } else if (avail < 100 || avail > 75) {
+            trElement = createEle("tr", null, "table-warning");
+          } else if (avail < 75 || avail > 0) {
+            trElement = createEle("tr", null, "table-danger");
+          }
+          trElement.appendChild(tdSiteName);
+          trElement.appendChild(tdHTTP);
+          trElement.appendChild(tdAvailability);
+
+          tbody.appendChild(trElement);
+          let techTable = document.querySelector("#techTable");
+          /*if(){
+            
+          document.querySelector("#load-spinner").remove();
+          }*/
+          if (techTable.childElementCount > 1) {
+            techTable.lastElementChild.remove();
+            techTable.appendChild(tbody);
+          } else {
+            techTable.appendChild(tbody);
+          }
         }
-        trElement.appendChild(tdSiteName);
-        trElement.appendChild(tdHTTP);
-        trElement.appendChild(tdAvailability);
-        /*
+      }
+      /*
         for (let i = 0; i < Object.keys(tempObject).length; i++) {
           //console.log(tempObject[i]);
           let tdSiteName = createEle("td", tempObject[i].majorSite);
         }*/
-        tbody.appendChild(trElement);
-      }
-      console.log(tbody);
+      /*
+      document
+        .querySelector("body > div > div")
+        .removeChild(
+          document.querySelector("body > div > div").lastElementChild
+        );
+          */
 
-      document.querySelector("#techTable").lastElementChild.replaceWith(tbody);
+      //document.querySelector(".location_tbody").replaceWith(tbody);
+      //console.log(document.querySelector(".location_tbody"));
       //tbody.appendChild(tb);
-      return tbody;
+      //return tbody;
     }
+    //Create Dynamic Function to append Object to DOM - element, parentNode target
+    function appendElementToTarget() {}
+    function createDropDownList() {
+      let siteKeyList = Object.keys(siteObject);
+      let LocationKeyList = Object.keys(siteObject[siteKeyList[0]]);
+
+      for (let i = 0; i < LocationKeyList.length; i++) {
+        let locationName =
+          siteObject[siteKeyList[0]][LocationKeyList[i]][0].location_descrip;
+        let tempOption = createEle("option", locationName);
+        tempOption.value = LocationKeyList[i];
+        document.getElementById("cityDropDown").appendChild(tempOption);
+      }
+    }
+    createDropDownList();
+
+    let dropDownSelect = document.querySelector("#cityDropDown");
+    console.log(dropDownSelect);
+    console.log(dropDownSelect.options[dropDownSelect.selectedIndex].value);
+
+    createTable(
+      siteObject,
+      dropDownSelect.options[dropDownSelect.selectedIndex].value
+    );
+    /*
+
     if (
       siteObject["Target"][drop_selection] != null &&
       siteObject["Target"][drop_selection] !== undefined
     ) {
-      createTable(siteObject, drop_selection);
+      //updateDropDownList();
     }
-    /*
       Match based on Object Location Number: 
           .obj_location
       Website Description Name:
@@ -195,12 +246,9 @@ function init(drop_selection) {
     */
   });
 }
-init();
+//init();
 
-/*
-When more locations are available
 init(document.querySelector("#cityDropDown").value);
-*/
 
 const select = document.querySelector("#cityDropDown");
 select.addEventListener("input", (event) => {
