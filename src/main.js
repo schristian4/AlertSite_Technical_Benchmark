@@ -1,6 +1,10 @@
+//const chart = window["Chart.min.js"];
+
 /* 
 All AlertSite Location IP's: https://www.alertsite.com/cgi-bin/helpme.cgi?page=monitoring_locations.html
 */
+
+//not liking the design change chart and table or remove chart and finish table
 
 //load JSON Data when ready
 function loadJSON() {
@@ -8,7 +12,7 @@ function loadJSON() {
     var xobj = new XMLHttpRequest();
 
     xobj.onreadystatechange = function () {
-      if (xobj.readyState == 4 && xobj.status == 200) {
+      if (xobj.readyState === 4 && xobj.status === 200) {
         resolve(xobj.response);
       }
     };
@@ -43,7 +47,7 @@ function createEle(type, content, styleClass) {
 /*------------------------
 Main Initializer function
 -------------------------*/
-function init(drop_selection) {
+function init(drop_selection_index) {
   //console.log(`init funct - Your Selection: ${drop_selection}`);
   var actual_JSON;
   askForJson().then((value) => {
@@ -91,7 +95,7 @@ function init(drop_selection) {
       "device_descrip",
       "obj_location"
     ]);
-    console.log(siteObject);
+    //console.log(siteObject);
     // Create DropDown list after retrieving siteobject on line 90.
 
     // FirstObject Keyname > [locationID Value] > [0] > .location_descrip
@@ -117,7 +121,6 @@ function init(drop_selection) {
     }
 
     let calcMetric = {
-      //Return array = [percentage, number of errors]
       availability: function (paramArray) {
         let errorCounter = 0;
         for (let i = 0; i < paramArray.length; i++) {
@@ -127,21 +130,29 @@ function init(drop_selection) {
         }
         return Math.round((errorCounter / paramArray.length) * 100);
       }
-      // Return number of total runs not in error
     };
 
-    /* Test CalcMetric method:
-    let x = calcMetric.availability(createParameterArray("Target", "status"));
-    console.log(x); */
-    //Update DropDown List:
-
+    //Function append Element to target element - Used to update table
+    function appendElementToTarget(element, parentNodeTarget) {
+      if (parentNodeTarget.childElementCount > 1) {
+        parentNodeTarget.lastElementChild.remove();
+        if (element !== null && element !== undefined) {
+          parentNodeTarget.appendChild(element);
+        }
+      } else {
+        if (element !== null && element !== undefined) {
+          parentNodeTarget.appendChild(element);
+        }
+      }
+    }
+    // Creat tbody element to append as last element to table
     function createTable(objectContent, location) {
-      console.log("start creat table");
+      //console.log("start creat table");
       let siteNameArray = Object.keys(objectContent);
       let tbody = createEle("tbody", null, "location_tbody");
       for (let i = 0; i < siteNameArray.length; i++) {
         let tempObject = objectContent[siteNameArray[i]][location];
-        console.log(objectContent[siteNameArray[i]][location]);
+        //console.log(objectContent[siteNameArray[i]][location]);
         let avail = calcMetric.availability(
           createParameterArray(siteNameArray[i], "status")
         );
@@ -162,74 +173,58 @@ function init(drop_selection) {
           } else if (avail < 75 || avail > 0) {
             trElement = createEle("tr", null, "table-danger");
           }
+
           trElement.appendChild(tdSiteName);
           trElement.appendChild(tdHTTP);
           trElement.appendChild(tdAvailability);
 
           tbody.appendChild(trElement);
           let techTable = document.querySelector("#techTable");
-          /*if(){
-            
-          document.querySelector("#load-spinner").remove();
-          }*/
-          if (techTable.childElementCount > 1) {
-            techTable.lastElementChild.remove();
-            techTable.appendChild(tbody);
-          } else {
-            techTable.appendChild(tbody);
-          }
+          //let techContainer = document.querySelector("body > div > div");
+
+          appendElementToTarget(tbody, techTable);
         }
       }
-      /*
-        for (let i = 0; i < Object.keys(tempObject).length; i++) {
-          //console.log(tempObject[i]);
-          let tdSiteName = createEle("td", tempObject[i].majorSite);
-        }*/
-      /*
-      document
-        .querySelector("body > div > div")
-        .removeChild(
-          document.querySelector("body > div > div").lastElementChild
-        );
-          */
-
-      //document.querySelector(".location_tbody").replaceWith(tbody);
-      //console.log(document.querySelector(".location_tbody"));
-      //tbody.appendChild(tb);
-      //return tbody;
     }
-    //Create Dynamic Function to append Object to DOM - element, parentNode target
-    function appendElementToTarget() {}
-    function createDropDownList() {
+
+    function createDropDownList(selectedIndex) {
       let siteKeyList = Object.keys(siteObject);
       let LocationKeyList = Object.keys(siteObject[siteKeyList[0]]);
-
+      let selectionElement = document.getElementById("cityDropDown");
+      //Remove all elements
+      function removeAllChildNodes(parent) {
+        while (parent.firstChild) {
+          parent.removeChild(parent.firstChild);
+        }
+      }
+      // Condition for new, existing, and updated location list
+      if (
+        selectionElement.childElementCount !== LocationKeyList.length ||
+        selectionElement.childElementCount === LocationKeyList.length
+      ) {
+        removeAllChildNodes(selectionElement);
+      }
+      //Loop through location list and append created option element
       for (let i = 0; i < LocationKeyList.length; i++) {
         let locationName =
           siteObject[siteKeyList[0]][LocationKeyList[i]][0].location_descrip;
         let tempOption = createEle("option", locationName);
         tempOption.value = LocationKeyList[i];
+
         document.getElementById("cityDropDown").appendChild(tempOption);
       }
+      selectionElement.selectedIndex = drop_selection_index;
     }
-    createDropDownList();
 
+    createDropDownList(drop_selection_index);
+    //Element is defined for drop
     let dropDownSelect = document.querySelector("#cityDropDown");
-    console.log(dropDownSelect);
-    console.log(dropDownSelect.options[dropDownSelect.selectedIndex].value);
-
     createTable(
       siteObject,
       dropDownSelect.options[dropDownSelect.selectedIndex].value
     );
-    /*
 
-    if (
-      siteObject["Target"][drop_selection] != null &&
-      siteObject["Target"][drop_selection] !== undefined
-    ) {
-      //updateDropDownList();
-    }
+    /*
       Match based on Object Location Number: 
           .obj_location
       Website Description Name:
@@ -244,19 +239,71 @@ function init(drop_selection) {
           .resptime
 
     */
+    let siteNameArray = Object.keys(siteObject);
+    console.log(siteObject);
+    //Loop each major Site and post response time for location on
+
+    console.log(createParameterArray("eBay", "dt_status"));
+    let myChart = document.getElementById("myChart").getContext("2d");
+
+    // Global Options
+
+    const data = {
+      datasets: [
+        {
+          label: "BBCi",
+          data: createParameterArray("BBCi", "resptime")
+          // borderColor: Utils.CHART_COLORS.red,
+          //  backgroundColor: Utils.transparentize(Utils.CHART_COLORS.red, 0.5)
+        },
+        {
+          label: "eBay",
+          data: createParameterArray("eBay", "resptime")
+          //  borderColor: Utils.CHART_COLORS.blue,
+          //backgroundColor: Utils.transparentize(Utils.CHART_COLORS.blue, 0.5)
+        }
+      ]
+    };
+    //console.log(myChart);
+    //add name then create
+    let massPopChart = new Chart(myChart, {
+      type: "line", // bar, horizontalBar, pie, line, doughnut, radar, polarArea
+      data: {
+        //we need the range between lowest to highest  timestamps entries
+        /*
+        Ebay
+
+        (4) ["0.543383002281189", "0.4788469970226288", "0.6049579977989197", "0.6169800162315369"]
+
+        */
+
+        labels: createParameterArray("eBay", "dt_status"),
+        datasets: data.datasets
+      },
+
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: "top"
+          },
+          title: {
+            display: true,
+            text: "Chart.js Line Chart"
+          }
+        }
+      }
+    });
   });
 }
-//init();
+//Initialize Drop Down menu
 
 init(document.querySelector("#cityDropDown").value);
 
 const select = document.querySelector("#cityDropDown");
 select.addEventListener("input", (event) => {
-  console.log(
-    "🚀 ~ Select index Value",
-    select.children[event.target.selectedIndex].value
-  );
-  init(event.target.value);
+  //console.log("🚀 ~ Select index Value",select.children[event.target.selectedIndex]  );
+  init(event.target.selectedIndex);
   // Use selected index to output detail report based on Value
   //const optionValue = select.children[event.target.selectedIndex].value;
   //console.log(`Option Location: ${optionValue}`);
