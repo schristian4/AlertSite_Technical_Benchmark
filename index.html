@@ -15,7 +15,6 @@
     integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
     crossorigin="anonymous"></script>
   <script src="./src/main.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
 
 </head>
 
@@ -31,17 +30,31 @@
       </select>
 
     </nav>
+    <div class="overview-location"> 
+        <div class="locationTile">
+          <div class="tileHeading"><div>
+          <div class="uptime"><div>
+          <div class="responseTimeAverage"></div>
+        </div>
     <div>
-      <canvas id="myChart" width="720" height="360" style="display: block; width: 720px; height: 360px;"></canvas>
-    </div>
+
+    <div class="overview-tiles"> 
+      <div class="cityTile">
+        <div class="tileHeading"><div>
+        <div class="uptime"><div>
+        <div class="responseTimeAverage"></div>
+      </div>
+    <div>
     <div class="bg-light">
       <table id="techTable" class="table">
         <thead>
           <tr>
+            <th>Status</th>
             <th>Major Site</th>
             <th>HTTP Status</th>
             <th>Availability</th>
-            <th>Response Metrics</th>
+            <th>Performance</th>
+            <th>Availability Trend</th>
           </tr>
         </thead>
       </table>
@@ -50,11 +63,7 @@
 
   </div>
 </body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
 
-<script>
-
-
-
-</script>
 
 </html>
