@@ -92,6 +92,7 @@ select {
   /*background-color: #73ffd2; Good Condition**/
   border-radius: 0.3em;
 }
+
 /*Calendar Graph Can*/
 .js-rollingcalendar {
   background-color: #fff;
@@ -129,6 +130,39 @@ select {
 }
 .rolling-calendar {
   position: relative;
+}
+
+.resptime_grid {
+  position: relative;
+  display: flex;
+  margin: 0;
+  padding: 0;
+  width: max-content;
+}
+/*--- Response Time Grid---*/
+.item {
+  background-color: greenyellow;
+  width: 25px;
+  height: 25px;
+  border: solid white 1px;
+}
+
+.table-success > td > .resptime_grid::before{
+  position: absolute;
+  content: "";
+  top: -55px;
+  width: 250px;
+  height: 50px;
+  background-color: rgb(177, 177, 177);
+  border-radius: 3px;
+  display: none;
+}
+.item_message{
+  position: absolute;
+  left: -50px;
+  background-color:rgb(177, 177, 177);
+  border: 1px black; 
+  
 }
 /*Phone*/
 @media only screen and (min-width: 320px) {

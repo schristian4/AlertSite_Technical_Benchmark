@@ -41,9 +41,13 @@ function createEle(type, content, styleClass) {
   if (styleClass != null && styleClass !== undefined) {
     newObject.classList.add(`${styleClass}`);
   }
+  
   return newObject;
 }
-
+// attr_value array type
+function addAttributeValues(attr_value){
+  
+}
 /*------------------------
 Main Initializer function
 -------------------------*/
@@ -95,19 +99,11 @@ function init(drop_selection_index) {
       "device_descrip",
       "obj_location"
     ]);
-    //console.log(siteObject);
-    // Create DropDown list after retrieving siteobject on line 90.
-
-    // FirstObject Keyname > [locationID Value] > [0] > .location_descrip
-
-    //console.log(siteObject[selectedLocationKeyNameArray[]]);
-
-    /*
-      for (let i = 0; i < selectedLocationKeyNameArray.length; i++) {
-        let tempOption = createEle("option");
-        tempOption.value = selectedLocationKeyNameArray[i];
-      }*/
-
+    let responseTIme = nestGroupsBy(actual_JSON, [
+      "device_descrip",
+      "dt_status", 
+    ]);
+  
     //Create parameters based on MajorSite ("IE.. Texas") Selection and the Parameter (" IE.. response Times") of choice
     function createParameterArray(majorSite, param) {
       let filters = siteObject[majorSite];
@@ -119,7 +115,6 @@ function init(drop_selection_index) {
       }
       return tempArray;
     }
-
     let calcMetric = {
       availability: function (paramArray) {
         let errorCounter = 0;
@@ -145,19 +140,48 @@ function init(drop_selection_index) {
         }
       }
     }
+    function createResponseTimeGrid(timestampArray, respTimeArray){
+        let tempArray = [];
+        tempArray.push(timestampArray)
+        tempArray.push(respTimeArray)
+        //64 - 10 = 54
+        console.log(tempArray[0].length);
+        let tdCardGrid = createEle('div',null, 'resptime_grid');
+        let td = createEle('td'); 
+        //Grab length of first of available timestamps and only use the last 10 entries
+        for(let counter = tempArray[0].length - 10; counter < tempArray[0].length; counter++){
+          let divCard = createEle('div', null,'item', i)
+          //console.log(divCard.attributes.value.value)
+          tdCardGrid.appendChild(divCard);
+        }
+        td.appendChild(tdCardGrid);
+        /*
+        double array object {0:[1,2,3,...], 1:[1,2,3,...]}
+        */ 
+        return td;
+    };
+
     // Creat tbody element to append as last element to table
     function createTable(objectContent, location) {
-      //console.log("start creat table");
+      console.log("start creat table");
+      
       let siteNameArray = Object.keys(objectContent);
+      
       let tbody = createEle("tbody", null, "location_tbody");
       for (let i = 0; i < siteNameArray.length; i++) {
         let tempObject = objectContent[siteNameArray[i]][location];
-        //console.log(objectContent[siteNameArray[i]][location]);
+ //responseTime can be undefined if not Available condition: "undefined" or "number" or "null"
+ //console.log(createParameterArray(siteNameArray[i], ""));
+        //console.log(tempObject[4]);
         let avail = calcMetric.availability(
           createParameterArray(siteNameArray[i], "status")
         );
         let tdAvailability = createEle("td", avail);
         let tdSiteName = createEle("td", siteNameArray[i]);
+        let tdResp = createResponseTimeGrid(
+          createParameterArray(siteNameArray[i], "dt_status"),createParameterArray(siteNameArray[i], "resptime")
+        );
+        
         let tdHTTP;
         if (tempObject !== undefined && tempObject !== null) {
           tdHTTP = createEle(
@@ -177,7 +201,7 @@ function init(drop_selection_index) {
           trElement.appendChild(tdSiteName);
           trElement.appendChild(tdHTTP);
           trElement.appendChild(tdAvailability);
-
+          trElement.appendChild(tdResp);
           tbody.appendChild(trElement);
           let techTable = document.querySelector("#techTable");
           //let techContainer = document.querySelector("body > div > div");
@@ -218,6 +242,7 @@ function init(drop_selection_index) {
 
     createDropDownList(drop_selection_index);
     //Element is defined for drop
+    //console.log(siteObject);
     let dropDownSelect = document.querySelector("#cityDropDown");
     createTable(
       siteObject,
@@ -239,73 +264,52 @@ function init(drop_selection_index) {
           .resptime
 
     */
-    let siteNameArray = Object.keys(siteObject);
-    console.log(siteObject);
+
     //Loop each major Site and post response time for location on
-
-    console.log(createParameterArray("eBay", "dt_status"));
-    let myChart = document.getElementById("myChart").getContext("2d");
-
-    // Global Options
-
-    const data = {
-      datasets: [
-        {
-          label: "BBCi",
-          data: createParameterArray("BBCi", "resptime")
-          // borderColor: Utils.CHART_COLORS.red,
-          //  backgroundColor: Utils.transparentize(Utils.CHART_COLORS.red, 0.5)
-        },
-        {
-          label: "eBay",
-          data: createParameterArray("eBay", "resptime")
-          //  borderColor: Utils.CHART_COLORS.blue,
-          //backgroundColor: Utils.transparentize(Utils.CHART_COLORS.blue, 0.5)
+    let itemList = document.querySelectorAll('.item');
+    let respTime = document.querySelector('.resptime_grid');
+      
+    for(let i = 0; i < itemList.length;i++){
+      itemList[i].addEventListener("mouseenter", (event) => {
+        let divEle = createEle('div', 'testing value', 'item_message');
+        if(event.target.parentNode.firstChild.classList.value != "item_message"){
+          divEle.style.left = `-${getComputedStyle(respTime).width}`; 
+          event.target.parentNode.prepend(divEle)
         }
-      ]
-    };
-    //console.log(myChart);
-    //add name then create
-    let massPopChart = new Chart(myChart, {
-      type: "line", // bar, horizontalBar, pie, line, doughnut, radar, polarArea
-      data: {
-        //we need the range between lowest to highest  timestamps entries
+        //console.log(event.target.getAttribute('value'))
+        //console.log(event.target.parentNode.prepend(div))
         /*
-        Ebay
-
-        (4) ["0.543383002281189", "0.4788469970226288", "0.6049579977989197", "0.6169800162315369"]
-
-        */
-
-        labels: createParameterArray("eBay", "dt_status"),
-        datasets: data.datasets
-      },
-
-      options: {
-        responsive: true,
-        plugins: {
-          legend: {
-            position: "top"
-          },
-          title: {
-            display: true,
-            text: "Chart.js Line Chart"
-          }
+        if (event.target.lastElementChild === null) {
+          createEle(type, content, styleClass,value)
+          let tempElement = createEle("div", "temp" ,"foo", null);
+          tempElement.style.width = getComputedStyle(availablityBoxStyle).width;
+          event.target.append(tempElement);
+        }*/
+        //console.log(/*event.target.parentNode.lastElementChild*/);
+        //console.log("enter");
+        
+      });
+  
+      itemList[i].addEventListener("mouseout", (event) => {
+        if (event.target.parentNode.firstChild.classList.value === "item_message") {
+          event.currentTarget.parentNode.firstElementChild.remove();
         }
-      }
-    });
+      });
+    }
+
   });
 }
-//Initialize Drop Down menu
 
-init(document.querySelector("#cityDropDown").value);
-
-const select = document.querySelector("#cityDropDown");
-select.addEventListener("input", (event) => {
-  //console.log("🚀 ~ Select index Value",select.children[event.target.selectedIndex]  );
-  init(event.target.selectedIndex);
-  // Use selected index to output detail report based on Value
-  //const optionValue = select.children[event.target.selectedIndex].value;
-  //console.log(`Option Location: ${optionValue}`);
-  //pullContent(optionValue)
-});
+window.addEventListener('DOMContentLoaded', ()=>{
+  init(document.querySelector("#cityDropDown").value);
+  
+  const select = document.querySelector("#cityDropDown");
+  select.addEventListener("input", (event) => {
+    //console.log("🚀 ~ Select index Value",select.children[event.target.selectedIndex]  );
+    init(event.target.selectedIndex);
+    // Use selected index to output detail report based on Value
+    //const optionValue = select.children[event.target.selectedIndex].value;
+    //console.log(`Option Location: ${optionValue}`);
+    //pullContent(optionValue)
+  });
+})
