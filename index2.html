@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Parcel Sandbox</title>
+    <meta charset="UTF-8" />
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta name="theme-color" content="#000000" />
+    <!--
+      manifest.json provides metadata used when your web app is added to the
+      homescreen on codeAndroid. See https://developers.google.com/web/fundamentals/engage-and-retain/web-app-manifest/
+    -->
+    <link rel="stylesheet" href="./src/styles.css" />
+  </head>
+
+  <body>
+    <div class="mainContainer">
+      <div class="heading">
+        <h1>AlertSite Technical Benchmark</h1>
+      </div>
+      <form>
+        <div class="search-field">
+          <p>Technical Benchmark Company:</p>
+          <select class="location_Drop_down" name="locations" id="locations">
+            <option name="ABC" value="ABC">ABC</option>
+          </select>
+        </div>
+      </form>
+      <!--!!!!Form Validate Input change color red!!!! -->
+      <p class="hint-dropdown">
+        Please select your location from the dropdown menu above
+      </p>
+      <!--Add header above - Requires separate containers for Tiles and Graph-->
+      <div class="locationList">
+        <!-- Convert into Class components-->
+        <div class="loading">Loading...</div>
+      </div>
+      <!--Inspiration Credit  Octa Status Page 
+			-----------------------------------------
+			Class Component Later -->
+      <div class="js-rollingcalendar" display="none">
+        <section class="service__features">
+          <div class="service__features_header">
+            <h1>Service Features</h1>
+            <h2>- Past 30 days</h2>
+            <div class="js-legend"></div>
+            <div class="legend__item"></div>
+            <div class="service__disruption"></div>
+          </div>
+        </section>
+        <section class="rolling__calender"></section>
+      </div>
+    </div>
+    <script src="src/index.js"></script>
+  </body>
+</html>
