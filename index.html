@@ -1,60 +1,61 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Parcel Sandbox</title>
-    <meta charset="UTF-8" />
-    <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    />
-    <meta name="theme-color" content="#000000" />
-    <!--
-      manifest.json provides metadata used when your web app is added to the
-      homescreen on Android. See https://developers.google.com/web/fundamentals/engage-and-retain/web-app-manifest/
-    -->
-    <link rel="stylesheet" href="/src/styles.css" />
-  </head>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="./miniChart.css">
 
-  <body>
-    <div class="mainContainer">
-      <div class="heading">
-        <h1>AlertSite Technical Benchmark</h1>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous" />
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+  crossorigin="anonymous"></script>
+  <script src="./js/CityStatus.json"></script>
+  <script src="./js/calcMetric.js"></script>
+  <script src="./js/Table.js"></script>
+  <script src="./js/Module.js"></script>
+  <script src="./js/IncidentBanner.js"></script>
+  <script src="./js/App.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
+
+</head>
+<body>
+  <div class="container bg-dark bg-gradient  ">
+    <nav class="navbar navbar-dark var-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+          AlertSite Technical Bench
+        </a>
+        <i class="check">  
+        </i>
       </div>
-      <form>
-        <div class="search-field">
-          <p>Technical Benchmark Company:</p>
-          <select class="location_Drop_down" name="locations" id="locations">
-            <option name="ABC" value="ABC">ABC</option>
-          </select>
+      <select id="cityDropDown" class="form-select dropdown-toggle" aria-label="Default select example">
+      </select>
+    </nav>
+  
+      <div class="container bg-dark border-light">
+        <p class="bg-gradient" style="color: white; font-weight: bold;">Incident History Log</p>
+        <div id="IncidentBanner"class="incidentLog-container">
+          <div class="alertItem" style="background: #42b983">No Past Incidents</div>
         </div>
-      </form>
-      <!--!!!!Form Validate Input change color red!!!! -->
-      <p class="hint-dropdown">
-        Please select your location from the dropdown menu above
-      </p>
-      <!--Add header above - Requires separate containers for Tiles and Graph-->
-      <div class="locationList">
-        <!-- Convert into Class components-->
-        <div class="loading">Loading...</div>
       </div>
-      <!--Inspiration Credit  Octa Status Page 
-			-----------------------------------------
-			Class Component Later -->
-      <div class="js-rollingcalendar" display="none">
-        <section class="service__features">
-          <div class="service__features_header">
-            <h1>Service Features</h1>
-            <h2>- Past 30 days</h2>
-            <div class="js-legend"></div>
-            <div class="legend__item"></div>
-            <div class="service__disruption"></div>
-          </div>
-        </section>
-        <section class="rolling__calender"></section>
-      </div>
+    <div>
+      <table id="techTable" class="table table-striped table-bordered table-dark">
+        <thead class="var-dark">
+          <tr>
+            <th>Status</th>
+            <th>Major Site</th>
+            <th>Availability</th>
+            <th>Response Metrics</th>
+          </tr>
+        </thead>
+      </table>
+      <!--Replace with something cool in the future animated spinner-->
     </div>
-  </body>
-  <script src="src/index.js"></script>
-  <script src="http://wolfshac.com/cgi-bin/AlertSiteDeviceStatus.cgi"></script>
+
+  </div>
+</body>
 </html>
