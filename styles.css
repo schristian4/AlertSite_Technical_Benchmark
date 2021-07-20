@@ -1,5 +1,4 @@
 body {
-  
   background-color: #1c1b21 !important;
   font-family: "Montserrat", sans-serif;
   margin: 0;
@@ -7,7 +6,12 @@ body {
   display: flex;
   justify-content: center;
 }
-
+.icon-legend{
+  display: flex;
+  flex-direction: column;
+  justify-content: left;
+  color: white;
+}
 
 .loading{
   align-items: center;
@@ -41,7 +45,14 @@ select {
   display: "";
 }
 
-
+.iconContainer > .iconWrapper > i{
+  position: absolute;
+  left: 2%;
+}
+.iconContainer > .iconWrapper > i{
+  position: absolute;
+  left: 2%;
+}
 /*Re-name mainContainer*/
 .mainContainer {
   display: flex;
