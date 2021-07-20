@@ -1,6 +1,5 @@
 const module = new Module();
 const table = new Table();
-const calcmetric = new CalcMetric();
 const incidentbanner = new IncidentBanner();
 
 

@@ -42,7 +42,16 @@ class Table{
         }
         return tempArray;
     }
-    
+    availability(paramArray) {
+        let errorCounter = 0;
+        for (let i = 0; i < paramArray.length; i++) {
+            if (parseInt(paramArray[i]) !== 0) {
+                errorCounter++;
+            }
+        }
+        return 100 - Math.round((errorCounter / paramArray.length) * 100);
+    }
+
     createTable(objectContent, location) {
          //Name of all major Sites
         let tbody = module.createEle('tbody', null, ['location_tbody']);
@@ -51,7 +60,7 @@ class Table{
             let majorSiteObjectTarget = objectContent[location][siteNameArray[i]];
             //(`Major Site Target: ${siteNameArray[i]}`, majorSiteObjectTarget)
             
-            let avail = calcmetric.availability(this.createParameterArray(location, 'status', siteNameArray[i]))
+            let avail = this.availability(this.createParameterArray(location, 'status', siteNameArray[i]))
             let tdAvailability = module.createEle('td', `${avail}%`, ['availablityCharm']);
             let tdSiteName = module.createEle('td', siteNameArray[i]);
             let dt_statusOutput = this.createParameterArray(location, 'dt_status', siteNameArray[i])
