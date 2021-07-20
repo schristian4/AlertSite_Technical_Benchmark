@@ -44,7 +44,7 @@ function groupBy(conversions, property) {
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-    const cityJSON = fetch('./JSON/cityStatus2.json')
+    const cityJSON = fetch('./JSON/cityStatus.json')
     .then((response) => response.json())
     .then((items) => {
         return items;
